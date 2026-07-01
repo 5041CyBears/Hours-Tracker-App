@@ -5,7 +5,8 @@ A simple static hours-tracking web app designed to be hosted on GitHub Pages, di
 ## Files
 
 - `index.html` - app layout
-- `styles.css` - app styling
+- `styles.css` - 5041 CyBear Robotics style-guide styling
+- `assets/5041-logo.jpg` - 5041 CyBear Robotics logo used in the header
 - `app.js` - browser-side app logic
 - `config.js` - Google Apps Script URL and app token
 - `google-apps-script/Code.gs` - backend code to paste into Apps Script
@@ -128,3 +129,18 @@ Replace the `src` URL with your actual GitHub Pages URL.
 ## Security note
 
 This is a lightweight tracker, not a secure payroll system. The app token is visible in the browser because the app is static. The user PIN check is better than an open form, but it is still appropriate only for simple internal, classroom, club, or volunteer tracking.
+
+
+## 5041 CyBear Robotics styling
+
+This version uses the attached 5041 CyBear Robotics style guide colors and layout direction:
+
+- Red Berry: `#980000`
+- Black: `#000000`
+- Dark Gray 3: `#666666`
+- Light Gray 3: `#F3F3F3`
+- White: `#FFFFFF`
+
+The header includes the provided 5041 logo without recoloring, rotating, distorting, drop shadows, or other logo changes. The layout uses sharp-edged shapes, angled blocks, and loading-bar-style divider lines to match the guide.
+
+When uploading to GitHub, make sure the full `assets` folder is included along with `index.html`, `styles.css`, `app.js`, and `config.js`.

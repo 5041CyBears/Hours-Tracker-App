@@ -1,13 +1,17 @@
+@import url("https://fonts.googleapis.com/css2?family=Audiowide&family=Droid+Sans:wght@400;700&family=Droid+Serif:wght@400;700&display=swap");
+
 :root {
-  --bg: #f4f7fb;
-  --card: #ffffff;
-  --text: #172033;
-  --muted: #64748b;
-  --border: #dbe3ef;
-  --primary: #2563eb;
-  --primary-dark: #1d4ed8;
-  --danger: #b91c1c;
-  --success: #166534;
+  --red-berry: #980000;
+  --black: #000000;
+  --dark-gray-3: #666666;
+  --light-gray-3: #f3f3f3;
+  --white: #ffffff;
+  --text: #000000;
+  --muted: #666666;
+  --border: #c9c9c9;
+  --danger: #980000;
+  --success: #1f6f35;
+  --shadow: 12px 12px 0 rgba(0, 0, 0, 0.13);
 }
 
 * { box-sizing: border-box; }
@@ -15,73 +19,253 @@
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: var(--bg);
+  font-family: "Droid Sans", Arial, sans-serif;
+  background:
+    linear-gradient(116deg, var(--black) 0 15%, transparent 15.15%),
+    linear-gradient(296deg, var(--red-berry) 0 20%, transparent 20.15%),
+    var(--light-gray-3);
   color: var(--text);
 }
 
 .app-shell {
-  width: min(1150px, 100%);
+  width: min(1180px, 100%);
   margin: 0 auto;
-  padding: 24px;
+  padding: 28px;
 }
 
+.brand-hero,
 .card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
-  padding: 24px;
+  position: relative;
+  background: var(--white);
+  border: 3px solid var(--black);
+  border-radius: 0;
+  box-shadow: var(--shadow);
+  overflow: hidden;
 }
 
-.hero {
-  display: flex;
-  justify-content: space-between;
+.brand-hero {
+  margin-bottom: 28px;
+  padding: 34px;
+}
+
+.brand-angle {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.brand-angle-black {
+  top: 0;
+  right: 0;
+  width: 36%;
+  height: 72px;
+  background: var(--black);
+  clip-path: polygon(20% 0, 100% 0, 100% 100%, 0 0);
+}
+
+.brand-angle-red {
+  left: 0;
+  bottom: 0;
+  width: 30%;
+  height: 110px;
+  background: var(--red-berry);
+  clip-path: polygon(0 18%, 64% 100%, 0 100%);
+}
+
+.brand-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr minmax(210px, 320px);
+  gap: 28px;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 24px;
+}
+
+.brand-copy {
+  max-width: 740px;
+}
+
+.logo-panel {
+  justify-self: end;
+  background: var(--white);
+  padding: 12px;
+  border-left: 14px solid var(--red-berry);
+}
+
+.team-logo {
+  display: block;
+  width: min(100%, 290px);
+  height: auto;
+}
+
+.hero-action-row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 22px;
+}
+
+.loading-bar {
+  display: block;
+  flex: 1;
+  height: 8px;
+  background: linear-gradient(90deg, var(--black) 0 42%, var(--dark-gray-3) 42% 60%, var(--red-berry) 60% 76%, transparent 76%);
 }
 
 .eyebrow {
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--primary);
-  font-weight: 700;
   margin: 0 0 8px;
-  font-size: 0.8rem;
+  color: var(--red-berry);
+  font-family: "Droid Sans", Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-h1, h2 { margin-top: 0; }
-h1 { margin-bottom: 8px; font-size: clamp(2rem, 4vw, 3.25rem); }
-h2 { font-size: 1.35rem; }
+.small-eyebrow {
+  font-size: 0.76rem;
+  margin-bottom: 3px;
+}
 
-.muted { color: var(--muted); margin: 0; }
+h1,
+h2 {
+  margin-top: 0;
+  line-height: 1.06;
+}
+
+h1 {
+  margin-bottom: 12px;
+  font-family: "Audiowide", "Droid Sans", Arial, sans-serif;
+  font-size: clamp(2.35rem, 6vw, 5rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+h2 {
+  margin-bottom: 0;
+  font-family: "Droid Sans", Arial, sans-serif;
+  font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+  font-weight: 700;
+}
+
+.tagline {
+  margin: 0 0 12px;
+  font-family: "Droid Serif", Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.muted {
+  color: var(--muted);
+  margin: 0;
+  font-family: "Droid Serif", Georgia, serif;
+}
+
 .small { font-size: 0.9rem; }
 
 .grid {
   display: grid;
-  grid-template-columns: minmax(280px, 420px) 1fr;
-  gap: 24px;
+  grid-template-columns: minmax(290px, 430px) 1fr;
+  gap: 28px;
 }
 
-form, label {
+.card {
+  padding: 24px;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 120px;
+  height: 48px;
+  background: var(--black);
+  clip-path: polygon(100% 0, 100% 100%, 0 0);
+}
+
+.form-card::after,
+.entries-card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 84px;
+  height: 84px;
+  background: var(--red-berry);
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+  opacity: 0.96;
+}
+
+.section-heading {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 5px solid var(--black);
+}
+
+.compact-heading {
+  margin-bottom: 0;
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.corner-mark {
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  background: var(--red-berry);
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+form,
+label {
   display: flex;
   flex-direction: column;
 }
 
-form { gap: 16px; }
-label { gap: 7px; font-weight: 650; }
+form {
+  position: relative;
+  z-index: 1;
+  gap: 16px;
+}
 
-input, textarea, button {
+label {
+  gap: 7px;
+  font-weight: 700;
+  color: var(--black);
+}
+
+input,
+textarea,
+select,
+button {
   font: inherit;
 }
 
-input, textarea {
-  border: 1px solid var(--border);
-  border-radius: 12px;
+input,
+textarea,
+select {
+  width: 100%;
+  border: 2px solid var(--black);
+  border-radius: 0;
   padding: 12px;
-  background: #fff;
-  color: var(--text);
+  background: var(--white);
+  color: var(--black);
+  outline: none;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--red-berry);
+  box-shadow: 5px 5px 0 rgba(152, 0, 0, 0.22);
 }
 
 textarea { resize: vertical; }
@@ -94,40 +278,69 @@ textarea { resize: vertical; }
 
 button {
   border: 0;
-  border-radius: 999px;
-  padding: 12px 18px;
-  background: var(--primary);
-  color: white;
-  font-weight: 750;
+  border-radius: 0;
+  padding: 13px 18px;
+  background: var(--red-berry);
+  color: var(--white);
+  font-family: "Droid Sans", Arial, sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   cursor: pointer;
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%);
 }
 
-button:hover { background: var(--primary-dark); }
+button:hover,
+button:focus-visible {
+  background: var(--black);
+}
+
 button.secondary {
-  color: var(--primary);
-  background: #eaf1ff;
+  min-width: 190px;
+  color: var(--white);
+  background: var(--black);
 }
-button.secondary:hover { background: #dbeafe; }
 
-.summary-box, .totals {
+button.secondary:hover,
+button.secondary:focus-visible {
+  background: var(--red-berry);
+}
+
+.summary-box,
+.totals {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
   padding: 14px 16px;
-  background: #f8fafc;
-  border: 1px solid var(--border);
-  border-radius: 14px;
+  background: var(--light-gray-3);
+  border: 2px solid var(--black);
+  border-left: 12px solid var(--red-berry);
 }
 
-.summary-box strong, .totals strong { font-size: 1.4rem; }
+.summary-box span,
+.totals span {
+  color: var(--muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.82rem;
+}
+
+.summary-box strong,
+.totals strong {
+  font-family: "Audiowide", "Droid Sans", Arial, sans-serif;
+  font-size: 1.45rem;
+}
 
 .entries-header {
+  position: relative;
+  z-index: 1;
   display: flex;
-  align-items: start;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 16px;
+  gap: 18px;
+  margin-bottom: 18px;
 }
 
 .filter-label {
@@ -136,37 +349,69 @@ button.secondary:hover { background: #dbeafe; }
 }
 
 .totals {
-  justify-content: start;
-  gap: 32px;
-  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+  justify-content: flex-start;
+  gap: 36px;
+  margin-bottom: 18px;
 }
 
-.totals div { display: flex; flex-direction: column; gap: 4px; }
-.totals span { color: var(--muted); font-size: 0.9rem; }
+.totals div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 
-.table-wrap { overflow-x: auto; }
+.table-wrap {
+  position: relative;
+  z-index: 1;
+  overflow-x: auto;
+  border: 2px solid var(--black);
+  background: var(--white);
+}
 
 table {
   width: 100%;
   border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
   text-align: left;
-  padding: 12px 10px;
+  padding: 13px 12px;
   border-bottom: 1px solid var(--border);
   vertical-align: top;
 }
 
 th {
-  color: var(--muted);
-  font-size: 0.85rem;
+  color: var(--white);
+  background: var(--black);
+  font-size: 0.82rem;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
 }
 
-.empty { text-align: center; color: var(--muted); padding: 28px; }
-.message { min-height: 1.4em; margin: 0; font-weight: 650; }
+tbody tr:nth-child(even) {
+  background: var(--light-gray-3);
+}
+
+td strong {
+  font-family: "Droid Sans", Arial, sans-serif;
+}
+
+.empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 32px;
+  font-family: "Droid Serif", Georgia, serif;
+}
+
+.message {
+  min-height: 1.4em;
+  margin: 0;
+  font-weight: 700;
+}
+
 .message.error { color: var(--danger); }
 .message.success { color: var(--success); }
 
@@ -178,10 +423,39 @@ th {
   left: -9999px;
 }
 
-@media (max-width: 850px) {
+@media (max-width: 900px) {
   .app-shell { padding: 16px; }
+
+  .brand-hero { padding: 24px; }
+
+  .brand-content {
+    grid-template-columns: 1fr;
+  }
+
+  .logo-panel {
+    justify-self: start;
+    border-left-width: 10px;
+  }
+
+  .team-logo {
+    width: min(100%, 240px);
+  }
+
   .grid { grid-template-columns: 1fr; }
-  .hero, .entries-header { flex-direction: column; align-items: stretch; }
-  .two-col { grid-template-columns: 1fr; }
+
+  .entries-header,
+  .hero-action-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .filter-label { min-width: 0; }
+}
+
+@media (max-width: 560px) {
+  h1 { font-size: 2.35rem; }
+  .two-col { grid-template-columns: 1fr; }
+  .brand-angle-black { width: 58%; }
+  .brand-angle-red { width: 48%; }
+  .totals { flex-direction: column; align-items: stretch; }
 }

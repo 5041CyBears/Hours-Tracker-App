@@ -3,23 +3,43 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hours Tracker</title>
+  <title>5041 CyBear Robotics Hours Tracker</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <main class="app-shell">
-    <section class="card hero">
-      <div>
-        <p class="eyebrow">Simple Hours Tracker</p>
-        <h1>Track volunteer or work hours</h1>
-        <p class="muted">Entries are saved to a Google Sheet through Google Apps Script.</p>
+    <section class="brand-hero" aria-labelledby="pageTitle">
+      <div class="brand-angle brand-angle-black" aria-hidden="true"></div>
+      <div class="brand-angle brand-angle-red" aria-hidden="true"></div>
+
+      <div class="brand-content">
+        <div class="brand-copy">
+          <p class="eyebrow">5041 CyBear Robotics</p>
+          <h1 id="pageTitle">Hours Tracker</h1>
+          <p class="tagline">Everyone has a place here.</p>
+          <p class="muted">Log approved team, outreach, build, and volunteer hours. Entries are saved to the connected Google Sheet.</p>
+        </div>
+
+        <div class="logo-panel" aria-label="5041 CyBear Robotics logo">
+          <img src="assets/5041-logo.jpg" alt="5041 CyBear Robotics logo" class="team-logo" />
+        </div>
       </div>
-      <button id="refreshBtn" class="secondary" type="button">Refresh entries</button>
+
+      <div class="hero-action-row">
+        <span class="loading-bar" aria-hidden="true"></span>
+        <button id="refreshBtn" class="secondary" type="button">Refresh entries</button>
+      </div>
     </section>
 
     <section class="grid">
       <form id="hoursForm" class="card form-card">
-        <h2>Add an entry</h2>
+        <div class="section-heading">
+          <span class="corner-mark" aria-hidden="true"></span>
+          <div>
+            <p class="eyebrow small-eyebrow">Approved User Entry</p>
+            <h2>Add an entry</h2>
+          </div>
+        </div>
 
         <label>
           Name
@@ -50,7 +70,6 @@
           </label>
         </div>
 
-
         <label>
           Category / task
           <input id="task" name="task" type="text" placeholder="Build meeting, outreach, admin, shift..." />
@@ -72,10 +91,15 @@
 
       <section class="card entries-card">
         <div class="entries-header">
-          <div>
-            <h2>Recent entries</h2>
-            <p class="muted small">Loaded from the connected Google Sheet.</p>
+          <div class="section-heading compact-heading">
+            <span class="corner-mark" aria-hidden="true"></span>
+            <div>
+              <p class="eyebrow small-eyebrow">Google Sheet Log</p>
+              <h2>Recent entries</h2>
+              <p class="muted small">Loaded from the connected Google Sheet.</p>
+            </div>
           </div>
+
           <label class="filter-label">
             Filter by name
             <input id="nameFilter" type="text" placeholder="Optional" />
