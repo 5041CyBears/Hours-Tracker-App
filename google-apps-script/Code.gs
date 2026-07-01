@@ -11,22 +11,35 @@
      - Execute as: Me
      - Who has access: Anyone
   7. Copy the /exec URL into config.js.
+
+  Spreadsheet tabs used:
+  - Hours: stores submitted hours.
+  - ApprovedUsers: stores who is allowed to submit hours.
+
+  ApprovedUsers columns:
+  - Username
+  - PIN
 */
 
 const SPREADSHEET_ID = 'PASTE_YOUR_GOOGLE_SHEET_ID_HERE';
-const SHEET_NAME = 'Hours';
+const HOURS_SHEET_NAME = 'Hours';
+const APPROVED_USERS_SHEET_NAME = 'ApprovedUsers';
 const APP_TOKEN = 'change-this-token';
 
-const HEADERS = [
+const HOURS_HEADERS = [
   'Created At',
   'Name',
   'Date',
   'Start Time',
   'End Time',
-  'Break Minutes',
   'Task',
   'Notes',
   'Total Hours'
+];
+
+const APPROVED_USERS_HEADERS = [
+  'Username',
+  'PIN'
 ];
 
 function doGet(e) {
@@ -40,6 +53,14 @@ function doGet(e) {
     return jsonp_(params.callback, listEntries_(params));
   }
 
+  if (params.action === 'users') {
+    return jsonp_(params.callback, listApprovedUsers_());
+  }
+
+  if (params.action === 'save') {
+    return jsonp_(params.callback, saveEntry_(params));
+  }
+
   return jsonp_(params.callback, {
     ok: true,
     message: 'Hours Tracker backend is running.'
@@ -47,24 +68,39 @@ function doGet(e) {
 }
 
 function doPost(e) {
-  const params = e.parameter || {};
+  const result = saveEntry_((e && e.parameter) || {});
+  return text_(result.ok ? 'Saved' : result.error);
+}
 
+function saveEntry_(params) {
   if (!isAuthorized_(params.token)) {
-    return ContentService
-      .createTextOutput('Unauthorized')
-      .setMimeType(ContentService.MimeType.TEXT);
+    return { ok: false, error: 'Unauthorized' };
   }
 
-  const sheet = getSheet_();
-  ensureHeaders_(sheet);
+  const personName = clean_(params.personName);
+  const pin = clean_(params.pin);
+
+  if (!personName) {
+    return { ok: false, error: 'Choose an approved user.' };
+  }
+
+  if (!pin) {
+    return { ok: false, error: 'Enter your PIN.' };
+  }
+
+  if (!isApprovedUser_(personName, pin)) {
+    return { ok: false, error: 'Wrong PIN for the selected user. Please try again.' };
+  }
+
+  const sheet = getHoursSheet_();
+  ensureHoursHeaders_(sheet);
 
   const row = [
     params.createdAt || new Date().toISOString(),
-    clean_(params.personName),
+    personName,
     clean_(params.workDate),
     clean_(params.startTime),
     clean_(params.endTime),
-    Number(params.breakMinutes || 0),
     clean_(params.task),
     clean_(params.notes),
     Number(params.totalHours || 0)
@@ -72,14 +108,20 @@ function doPost(e) {
 
   sheet.appendRow(row);
 
-  return ContentService
-    .createTextOutput('Saved')
-    .setMimeType(ContentService.MimeType.TEXT);
+  return {
+    ok: true,
+    message: `Hours submitted for ${personName}.`,
+    entry: {
+      personName,
+      workDate: clean_(params.workDate),
+      totalHours: Number(params.totalHours || 0)
+    }
+  };
 }
 
 function listEntries_(params) {
-  const sheet = getSheet_();
-  ensureHeaders_(sheet);
+  const sheet = getHoursSheet_();
+  ensureHoursHeaders_(sheet);
 
   const values = sheet.getDataRange().getValues();
   const rows = values.slice(1);
@@ -103,6 +145,40 @@ function listEntries_(params) {
   };
 }
 
+function listApprovedUsers_() {
+  const sheet = getApprovedUsersSheet_();
+  ensureApprovedUsersHeaders_(sheet);
+
+  const values = sheet.getDataRange().getValues();
+  const users = values
+    .slice(1)
+    .map(row => clean_(row[0]))
+    .filter(Boolean)
+    .sort((a, b) => a.localeCompare(b));
+
+  return {
+    ok: true,
+    users
+  };
+}
+
+function isApprovedUser_(personName, pin) {
+  if (!personName || !pin) return false;
+
+  const sheet = getApprovedUsersSheet_();
+  ensureApprovedUsersHeaders_(sheet);
+
+  const values = sheet.getDataRange().getValues();
+  const nameToCheck = personName.trim().toLowerCase();
+  const pinToCheck = String(pin).trim();
+
+  return values.slice(1).some(row => {
+    const approvedName = clean_(row[0]).toLowerCase();
+    const approvedPin = clean_(row[1]);
+    return approvedName === nameToCheck && approvedPin === pinToCheck;
+  });
+}
+
 function rowToEntry_(row) {
   return {
     createdAt: formatCell_(row[0]),
@@ -110,27 +186,73 @@ function rowToEntry_(row) {
     workDate: formatCell_(row[2]),
     startTime: formatCell_(row[3]),
     endTime: formatCell_(row[4]),
-    breakMinutes: Number(row[5] || 0),
-    task: formatCell_(row[6]),
-    notes: formatCell_(row[7]),
-    totalHours: Number(row[8] || 0)
+    task: formatCell_(row[5]),
+    notes: formatCell_(row[6]),
+    totalHours: Number(row[7] || 0)
   };
 }
 
-function getSheet_() {
-  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  let sheet = spreadsheet.getSheetByName(SHEET_NAME);
-  if (!sheet) sheet = spreadsheet.insertSheet(SHEET_NAME);
+function getSpreadsheet_() {
+  return SpreadsheetApp.openById(SPREADSHEET_ID);
+}
+
+function getHoursSheet_() {
+  const spreadsheet = getSpreadsheet_();
+  let sheet = spreadsheet.getSheetByName(HOURS_SHEET_NAME);
+  if (!sheet) sheet = spreadsheet.insertSheet(HOURS_SHEET_NAME);
   return sheet;
 }
 
-function ensureHeaders_(sheet) {
-  const firstRow = sheet.getRange(1, 1, 1, HEADERS.length).getValues()[0];
+function getApprovedUsersSheet_() {
+  const spreadsheet = getSpreadsheet_();
+  let sheet = spreadsheet.getSheetByName(APPROVED_USERS_SHEET_NAME);
+  if (!sheet) sheet = spreadsheet.insertSheet(APPROVED_USERS_SHEET_NAME);
+  return sheet;
+}
+
+function ensureHoursHeaders_(sheet) {
+  migrateOldBreakColumnIfNeeded_(sheet);
+
+  const firstRow = sheet.getRange(1, 1, 1, HOURS_HEADERS.length).getValues()[0];
   const hasHeaders = firstRow.some(value => value);
 
   if (!hasHeaders) {
-    sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
+    sheet.getRange(1, 1, 1, HOURS_HEADERS.length).setValues([HOURS_HEADERS]);
     sheet.setFrozenRows(1);
+    return;
+  }
+
+  const existingHeaders = firstRow.map(value => String(value || '').trim());
+  const headersMatch = HOURS_HEADERS.every((header, index) => existingHeaders[index] === header);
+
+  if (!headersMatch) {
+    sheet.getRange(1, 1, 1, HOURS_HEADERS.length).setValues([HOURS_HEADERS]);
+    sheet.setFrozenRows(1);
+  }
+}
+
+function ensureApprovedUsersHeaders_(sheet) {
+  const firstRow = sheet.getRange(1, 1, 1, APPROVED_USERS_HEADERS.length).getValues()[0];
+  const hasHeaders = firstRow.some(value => value);
+
+  if (!hasHeaders) {
+    sheet.getRange(1, 1, 1, APPROVED_USERS_HEADERS.length).setValues([APPROVED_USERS_HEADERS]);
+    sheet.setFrozenRows(1);
+  }
+}
+
+function migrateOldBreakColumnIfNeeded_(sheet) {
+  const maxColumns = sheet.getMaxColumns();
+  if (maxColumns < 9) return;
+
+  const headers = sheet.getRange(1, 1, 1, 9).getValues()[0].map(value => String(value || '').trim());
+  const looksLikeOldLayout = headers[0] === 'Created At'
+    && headers[1] === 'Name'
+    && headers[5] === 'Break Minutes'
+    && headers[8] === 'Total Hours';
+
+  if (looksLikeOldLayout) {
+    sheet.deleteColumn(6);
   }
 }
 
@@ -148,6 +270,12 @@ function jsonp_(callback, object) {
     .setMimeType(ContentService.MimeType.JAVASCRIPT);
 }
 
+function text_(value) {
+  return ContentService
+    .createTextOutput(value)
+    .setMimeType(ContentService.MimeType.TEXT);
+}
+
 function clean_(value) {
   return String(value || '').trim();
 }
@@ -157,4 +285,46 @@ function formatCell_(value) {
     return Utilities.formatDate(value, Session.getScriptTimeZone(), 'yyyy-MM-dd');
   }
   return String(value || '');
+}
+
+function testSheetConnection() {
+  const approvedUsersSheet = getApprovedUsersSheet_();
+  ensureApprovedUsersHeaders_(approvedUsersSheet);
+
+  const existingUsers = approvedUsersSheet.getDataRange().getValues().slice(1).map(row => clean_(row[0]));
+  if (!existingUsers.includes('Test User')) {
+    approvedUsersSheet.appendRow(['Test User', '1234']);
+  }
+
+  const hoursSheet = getHoursSheet_();
+  ensureHoursHeaders_(hoursSheet);
+  hoursSheet.appendRow([
+    new Date().toISOString(),
+    'Test User',
+    '2026-07-01',
+    '09:00',
+    '10:00',
+    'Test task',
+    'Testing Apps Script connection',
+    1
+  ]);
+}
+
+function testDoPost() {
+  const fakeEvent = {
+    parameter: {
+      token: APP_TOKEN,
+      personName: 'Test User',
+      pin: '1234',
+      workDate: '2026-07-01',
+      startTime: '09:00',
+      endTime: '10:30',
+      totalHours: '1.5',
+      task: 'Test Entry',
+      notes: 'Testing doPost manually'
+    }
+  };
+
+  const result = doPost(fakeEvent);
+  Logger.log(result.getContent());
 }
