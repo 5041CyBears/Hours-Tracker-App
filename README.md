@@ -144,3 +144,43 @@ This version uses the attached 5041 CyBear Robotics style guide colors and layou
 The header includes the provided 5041 logo without recoloring, rotating, distorting, drop shadows, or other logo changes. The layout uses sharp-edged shapes, angled blocks, and loading-bar-style divider lines to match the guide.
 
 When uploading to GitHub, make sure the full `assets` folder is included along with `index.html`, `styles.css`, `app.js`, and `config.js`.
+
+
+## Reports page
+
+This version includes a second web page:
+
+```txt
+report.html
+```
+
+The reports page uses the same `config.js` and Google Apps Script backend. It can:
+
+- pull every name from the `ApprovedUsers` sheet,
+- calculate each approved user's total hours for a selected start and end date,
+- show total approved users, entries, and hours for that selected range,
+- show a leaderboard for the last three months.
+
+After replacing `Code.gs`, redeploy the Apps Script web app as a **New version**. The report page needs the new backend action:
+
+```txt
+action=summary
+```
+
+You can open the report page at:
+
+```txt
+https://YOUR-USERNAME.github.io/hours-tracker/report.html
+```
+
+To embed only the report page in Squarespace, use:
+
+```html
+<iframe
+  src="https://YOUR-USERNAME.github.io/hours-tracker/report.html"
+  width="100%"
+  height="1000"
+  style="border:0;"
+  title="5041 Hours Reports">
+</iframe>
+```

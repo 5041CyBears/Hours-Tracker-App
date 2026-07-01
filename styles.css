@@ -87,12 +87,14 @@ body {
 
 .logo-panel {
   justify-self: end;
-  padding: 2px;
+  background: var(--white);
+  padding: 12px;
+  border-left: 14px solid var(--red-berry);
 }
 
 .team-logo {
   display: block;
-  width: min(100%, 600px);
+  width: min(100%, 290px);
   height: auto;
 }
 
@@ -456,4 +458,114 @@ td strong {
   .brand-angle-black { width: 58%; }
   .brand-angle-red { width: 48%; }
   .totals { flex-direction: column; align-items: stretch; }
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.button-link {
+  display: inline-block;
+  border: 0;
+  border-radius: 0;
+  padding: 13px 22px;
+  background: var(--red-berry);
+  color: var(--white);
+  font-family: "Droid Sans", Arial, sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  cursor: pointer;
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%);
+}
+
+.button-link:hover,
+.button-link:focus-visible {
+  background: var(--black);
+}
+
+.button-link.secondary {
+  background: var(--black);
+}
+
+.button-link.secondary:hover,
+.button-link.secondary:focus-visible {
+  background: var(--red-berry);
+}
+
+.report-grid {
+  display: grid;
+  grid-template-columns: minmax(290px, 460px) 1fr;
+  gap: 28px;
+}
+
+.report-controls-card,
+.report-summary-card,
+.full-width-card {
+  min-width: 0;
+}
+
+.report-form {
+  display: flex;
+  gap: 16px;
+}
+
+.preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.small-button {
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  clip-path: polygon(0 0, calc(100% - 13px) 0, 100% 50%, calc(100% - 13px) 100%, 0 100%);
+}
+
+.report-totals {
+  margin-top: 24px;
+  margin-bottom: 0;
+  flex-wrap: wrap;
+}
+
+.full-width-card {
+  grid-column: 1 / -1;
+}
+
+.leaderboard-card .table-wrap {
+  border-left: 12px solid var(--red-berry);
+}
+
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 30px;
+  padding: 4px 8px;
+  background: var(--black);
+  color: var(--white);
+  font-family: "Audiowide", "Droid Sans", Arial, sans-serif;
+}
+
+.leaderboard-top .rank-badge {
+  background: var(--red-berry);
+}
+
+.leaderboard-top td {
+  background: rgba(152, 0, 0, 0.07);
+}
+
+@media (max-width: 900px) {
+  .button-row {
+    justify-content: flex-start;
+  }
+
+  .report-grid {
+    grid-template-columns: 1fr;
+  }
 }

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5041 CyBear Robotics Hours Reports</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="brand-hero" aria-labelledby="pageTitle">
+      <div class="brand-angle brand-angle-black" aria-hidden="true"></div>
+      <div class="brand-angle brand-angle-red" aria-hidden="true"></div>
+
+      <div class="brand-content">
+        <div class="brand-copy">
+          <p class="eyebrow">5041 CyBear Robotics</p>
+          <h1 id="pageTitle">Hours Reports</h1>
+          <p class="tagline">Track team contributions by approved user.</p>
+          <p class="muted">Choose a time period to total approved-user hours. The leaderboard always shows totals from the last three months.</p>
+        </div>
+
+        <div class="logo-panel" aria-label="5041 CyBear Robotics logo">
+          <img src="assets/5041-logo.jpg" alt="5041 CyBear Robotics logo" class="team-logo" />
+        </div>
+      </div>
+
+      <div class="hero-action-row">
+        <span class="loading-bar" aria-hidden="true"></span>
+        <div class="button-row">
+          <a class="button-link secondary" href="index.html">Log hours</a>
+          <button id="refreshReportBtn" class="secondary" type="button">Refresh report</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="report-grid">
+      <section class="card report-controls-card">
+        <div class="section-heading">
+          <span class="corner-mark" aria-hidden="true"></span>
+          <div>
+            <p class="eyebrow small-eyebrow">Custom Time Period</p>
+            <h2>Choose dates</h2>
+          </div>
+        </div>
+
+        <form id="reportForm" class="report-form">
+          <div class="two-col">
+            <label>
+              Start date
+              <input id="reportStartDate" type="date" required />
+            </label>
+
+            <label>
+              End date
+              <input id="reportEndDate" type="date" required />
+            </label>
+          </div>
+
+          <div class="preset-row" aria-label="Quick date range choices">
+            <button class="secondary small-button" type="button" data-range="month">This month</button>
+            <button class="secondary small-button" type="button" data-range="30">Last 30 days</button>
+            <button class="secondary small-button" type="button" data-range="90">Last 90 days</button>
+          </div>
+
+          <button type="submit">Run report</button>
+          <p id="reportMessage" class="message" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="card report-summary-card">
+        <div class="section-heading compact-heading">
+          <span class="corner-mark" aria-hidden="true"></span>
+          <div>
+            <p class="eyebrow small-eyebrow">Selected Range</p>
+            <h2 id="selectedRangeLabel">Totals</h2>
+          </div>
+        </div>
+
+        <div class="totals report-totals">
+          <div>
+            <span>Total approved users</span>
+            <strong id="approvedUserCount">0</strong>
+          </div>
+          <div>
+            <span>Total entries</span>
+            <strong id="selectedEntryCount">0</strong>
+          </div>
+          <div>
+            <span>Total hours</span>
+            <strong id="selectedHoursTotal">0.00</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="card full-width-card">
+        <div class="entries-header">
+          <div class="section-heading compact-heading">
+            <span class="corner-mark" aria-hidden="true"></span>
+            <div>
+              <p class="eyebrow small-eyebrow">Approved User Totals</p>
+              <h2>Hours by user</h2>
+              <p class="muted small">Includes all users in the ApprovedUsers sheet, even if they have 0 hours in the selected period.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Entries</th>
+                <th>Total hours</th>
+                <th>Latest entry</th>
+              </tr>
+            </thead>
+            <tbody id="userTotalsBody">
+              <tr><td colspan="4" class="empty">No report loaded yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card full-width-card leaderboard-card">
+        <div class="entries-header">
+          <div class="section-heading compact-heading">
+            <span class="corner-mark" aria-hidden="true"></span>
+            <div>
+              <p class="eyebrow small-eyebrow">Last Three Months</p>
+              <h2>Leaderboard</h2>
+              <p id="leaderboardRangeLabel" class="muted small">Loaded from the connected Google Sheet.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Entries</th>
+                <th>Total hours</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboardBody">
+              <tr><td colspan="4" class="empty">No leaderboard loaded yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="report.js"></script>
+</body>
+</html>

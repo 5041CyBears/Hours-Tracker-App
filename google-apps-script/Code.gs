@@ -57,6 +57,10 @@ function doGet(e) {
     return jsonp_(params.callback, listApprovedUsers_());
   }
 
+  if (params.action === 'summary') {
+    return jsonp_(params.callback, getHoursSummary_(params));
+  }
+
   if (params.action === 'save') {
     return jsonp_(params.callback, saveEntry_(params));
   }
@@ -146,20 +150,113 @@ function listEntries_(params) {
 }
 
 function listApprovedUsers_() {
+  return {
+    ok: true,
+    users: getApprovedUserNames_()
+  };
+}
+
+function getApprovedUserNames_() {
   const sheet = getApprovedUsersSheet_();
   ensureApprovedUsersHeaders_(sheet);
 
   const values = sheet.getDataRange().getValues();
-  const users = values
+  return values
     .slice(1)
     .map(row => clean_(row[0]))
     .filter(Boolean)
     .sort((a, b) => a.localeCompare(b));
+}
+
+function getHoursSummary_(params) {
+  const approvedUsers = getApprovedUserNames_();
+  const hoursSheet = getHoursSheet_();
+  ensureHoursHeaders_(hoursSheet);
+
+  const today = dateOnly_(new Date());
+  const defaultStart = new Date(today.getFullYear(), today.getMonth(), 1);
+  const startDate = parseDateOnly_(params.startDate) || defaultStart;
+  const endDate = parseDateOnly_(params.endDate) || today;
+
+  const leaderboardStart = addMonths_(today, -3);
+  const leaderboardEnd = today;
+
+  const selectedMap = makeUserSummaryMap_(approvedUsers);
+  const leaderboardMap = makeUserSummaryMap_(approvedUsers);
+
+  const values = hoursSheet.getDataRange().getValues().slice(1);
+  values.forEach(row => {
+    const entryNameRaw = clean_(row[1]);
+    const canonicalName = findApprovedName_(approvedUsers, entryNameRaw);
+    if (!canonicalName) return;
+
+    const workDate = normalizeDateCell_(row[2]);
+    if (!workDate) return;
+
+    const totalHours = Number(row[7] || 0);
+    if (!isFinite(totalHours)) return;
+
+    if (workDate >= startDate && workDate <= endDate) {
+      addToSummary_(selectedMap[canonicalName], totalHours, workDate);
+    }
+
+    if (workDate >= leaderboardStart && workDate <= leaderboardEnd) {
+      addToSummary_(leaderboardMap[canonicalName], totalHours, workDate);
+    }
+  });
+
+  const userTotals = Object.keys(selectedMap)
+    .sort((a, b) => a.localeCompare(b))
+    .map(name => selectedMap[name]);
+
+  const leaderboard = Object.keys(leaderboardMap)
+    .map(name => leaderboardMap[name])
+    .sort((a, b) => {
+      if (b.totalHours !== a.totalHours) return b.totalHours - a.totalHours;
+      return a.personName.localeCompare(b.personName);
+    });
+
+  const totalHours = userTotals.reduce((sum, user) => sum + user.totalHours, 0);
+  const totalEntries = userTotals.reduce((sum, user) => sum + user.entries, 0);
 
   return {
     ok: true,
-    users
+    startDate: formatDateOnly_(startDate),
+    endDate: formatDateOnly_(endDate),
+    totalHours: roundHours_(totalHours),
+    totalEntries,
+    users: userTotals,
+    leaderboardStart: formatDateOnly_(leaderboardStart),
+    leaderboardEnd: formatDateOnly_(leaderboardEnd),
+    leaderboard
   };
+}
+
+function makeUserSummaryMap_(approvedUsers) {
+  return approvedUsers.reduce((map, name) => {
+    map[name] = {
+      personName: name,
+      totalHours: 0,
+      entries: 0,
+      latestDate: ''
+    };
+    return map;
+  }, {});
+}
+
+function findApprovedName_(approvedUsers, name) {
+  const lowerName = clean_(name).toLowerCase();
+  return approvedUsers.find(user => user.toLowerCase() === lowerName) || '';
+}
+
+function addToSummary_(summary, hours, workDate) {
+  if (!summary) return;
+  summary.totalHours = roundHours_(summary.totalHours + hours);
+  summary.entries += 1;
+  const dateString = formatDateOnly_(workDate);
+  if (!summary.latestDate || dateString > summary.latestDate) {
+    summary.latestDate = dateString;
+  }
 }
 
 function isApprovedUser_(personName, pin) {
@@ -254,6 +351,37 @@ function migrateOldBreakColumnIfNeeded_(sheet) {
   if (looksLikeOldLayout) {
     sheet.deleteColumn(6);
   }
+}
+
+
+function normalizeDateCell_(value) {
+  if (value instanceof Date) {
+    return dateOnly_(value);
+  }
+  return parseDateOnly_(formatCell_(value));
+}
+
+function parseDateOnly_(value) {
+  const text = clean_(value);
+  const match = text.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return null;
+  return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+}
+
+function dateOnly_(date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function addMonths_(date, months) {
+  return new Date(date.getFullYear(), date.getMonth() + months, date.getDate());
+}
+
+function formatDateOnly_(date) {
+  return Utilities.formatDate(date, Session.getScriptTimeZone(), 'yyyy-MM-dd');
+}
+
+function roundHours_(value) {
+  return Math.round(Number(value || 0) * 100) / 100;
 }
 
 function isAuthorized_(token) {
