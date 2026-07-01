@@ -88,12 +88,11 @@ body {
 .logo-panel {
   justify-self: end;
   padding: 2px;
-  border-left: 14px solid var(--red-berry);
 }
 
 .team-logo {
   display: block;
-  width: min(100%, 290px);
+  width: min(100%, 350px);
   height: auto;
 }
 
