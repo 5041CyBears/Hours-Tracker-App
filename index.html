@@ -23,7 +23,14 @@
 
         <label>
           Name
-          <input id="personName" name="personName" type="text" placeholder="Student, mentor, employee..." required />
+          <select id="personName" name="personName" required>
+            <option value="">Loading approved users...</option>
+          </select>
+        </label>
+
+        <label>
+          PIN
+          <input id="pin" name="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="Enter your PIN" required />
         </label>
 
         <label>
@@ -43,10 +50,6 @@
           </label>
         </div>
 
-        <label>
-          Break minutes
-          <input id="breakMinutes" name="breakMinutes" type="number" min="0" step="1" value="0" />
-        </label>
 
         <label>
           Category / task

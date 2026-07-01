@@ -13,10 +13,10 @@ const nameFilter = document.querySelector("#nameFilter");
 
 const fields = {
   personName: document.querySelector("#personName"),
+  pin: document.querySelector("#pin"),
   workDate: document.querySelector("#workDate"),
   startTime: document.querySelector("#startTime"),
   endTime: document.querySelector("#endTime"),
-  breakMinutes: document.querySelector("#breakMinutes"),
   task: document.querySelector("#task"),
   notes: document.querySelector("#notes")
 };
@@ -32,7 +32,6 @@ function calculateHours() {
   const date = fields.workDate.value || "2000-01-01";
   const start = fields.startTime.value;
   const end = fields.endTime.value;
-  const breakMinutes = Number(fields.breakMinutes.value || 0);
 
   if (!start || !end) return 0;
 
@@ -44,7 +43,7 @@ function calculateHours() {
     endDate.setDate(endDate.getDate() + 1);
   }
 
-  const diffMinutes = (endDate - startDate) / 60000 - breakMinutes;
+  const diffMinutes = (endDate - startDate) / 60000;
   return Math.max(0, diffMinutes / 60);
 }
 
@@ -52,7 +51,7 @@ function updateCalculatedHours() {
   calculatedHoursEl.textContent = calculateHours().toFixed(2);
 }
 
-[fields.workDate, fields.startTime, fields.endTime, fields.breakMinutes].forEach((input) => {
+[fields.workDate, fields.startTime, fields.endTime].forEach((input) => {
   input.addEventListener("input", updateCalculatedHours);
 });
 
@@ -89,17 +88,27 @@ form.addEventListener("submit", (event) => {
 
   const hours = calculateHours();
   if (hours <= 0) {
-    setMessage("Check the start time, end time, and break minutes.", "error");
+    setMessage("Check the start time and end time.", "error");
+    return;
+  }
+
+  if (!fields.personName.value) {
+    setMessage("Choose an approved user.", "error");
+    return;
+  }
+
+  if (!fields.pin.value.trim()) {
+    setMessage("Enter your PIN.", "error");
     return;
   }
 
   const data = {
     token: APP_TOKEN,
     personName: fields.personName.value.trim(),
+    pin: fields.pin.value.trim(),
     workDate: fields.workDate.value,
     startTime: fields.startTime.value,
     endTime: fields.endTime.value,
-    breakMinutes: fields.breakMinutes.value || "0",
     task: fields.task.value.trim(),
     notes: fields.notes.value.trim(),
     totalHours: hours.toFixed(2),
@@ -111,7 +120,10 @@ form.addEventListener("submit", (event) => {
   hiddenForm.remove();
 
   setMessage("Entry submitted. Refreshing recent entries...", "success");
+
+  const selectedName = fields.personName.value;
   form.reset();
+  fields.personName.value = selectedName;
   fields.workDate.valueAsDate = new Date();
   updateCalculatedHours();
 
@@ -140,13 +152,49 @@ function loadJsonp(url) {
 
     script.onerror = () => {
       cleanup();
-      reject(new Error("Could not load entries."));
+      reject(new Error("Could not load data from the spreadsheet."));
     };
 
     const separator = url.includes("?") ? "&" : "?";
     script.src = `${url}${separator}callback=${encodeURIComponent(callbackName)}`;
     document.body.appendChild(script);
   });
+}
+
+async function loadApprovedUsers() {
+  if (!ensureConfigured()) return;
+
+  const params = new URLSearchParams({
+    action: "users",
+    token: APP_TOKEN
+  });
+
+  try {
+    fields.personName.innerHTML = `<option value="">Loading approved users...</option>`;
+    const data = await loadJsonp(`${SCRIPT_URL}?${params.toString()}`);
+
+    if (!data.ok) {
+      throw new Error(data.error || "Unknown error");
+    }
+
+    renderApprovedUsers(data.users || []);
+  } catch (error) {
+    fields.personName.innerHTML = `<option value="">Could not load approved users</option>`;
+    setMessage(error.message, "error");
+  }
+}
+
+function renderApprovedUsers(users) {
+  if (!users.length) {
+    fields.personName.innerHTML = `<option value="">No approved users found</option>`;
+    setMessage("Add names and PINs to the ApprovedUsers sheet.", "error");
+    return;
+  }
+
+  fields.personName.innerHTML = [
+    `<option value="">Select your name...</option>`,
+    ...users.map(user => `<option value="${escapeHtml(user)}">${escapeHtml(user)}</option>`)
+  ].join("");
 }
 
 async function loadEntries() {
@@ -207,11 +255,16 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-refreshBtn.addEventListener("click", loadEntries);
+refreshBtn.addEventListener("click", () => {
+  loadApprovedUsers();
+  loadEntries();
+});
+
 nameFilter.addEventListener("input", () => {
   clearTimeout(nameFilter._timer);
   nameFilter._timer = setTimeout(loadEntries, 400);
 });
 
 updateCalculatedHours();
+loadApprovedUsers();
 loadEntries();
