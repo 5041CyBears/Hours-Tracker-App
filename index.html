@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hours Tracker</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="card hero">
+      <div>
+        <p class="eyebrow">Simple Hours Tracker</p>
+        <h1>Track volunteer or work hours</h1>
+        <p class="muted">Entries are saved to a Google Sheet through Google Apps Script.</p>
+      </div>
+      <button id="refreshBtn" class="secondary" type="button">Refresh entries</button>
+    </section>
+
+    <section class="grid">
+      <form id="hoursForm" class="card form-card">
+        <h2>Add an entry</h2>
+
+        <label>
+          Name
+          <input id="personName" name="personName" type="text" placeholder="Student, mentor, employee..." required />
+        </label>
+
+        <label>
+          Date
+          <input id="workDate" name="workDate" type="date" required />
+        </label>
+
+        <div class="two-col">
+          <label>
+            Start time
+            <input id="startTime" name="startTime" type="time" required />
+          </label>
+
+          <label>
+            End time
+            <input id="endTime" name="endTime" type="time" required />
+          </label>
+        </div>
+
+        <label>
+          Break minutes
+          <input id="breakMinutes" name="breakMinutes" type="number" min="0" step="1" value="0" />
+        </label>
+
+        <label>
+          Category / task
+          <input id="task" name="task" type="text" placeholder="Build meeting, outreach, admin, shift..." />
+        </label>
+
+        <label>
+          Notes
+          <textarea id="notes" name="notes" rows="3" placeholder="Optional details"></textarea>
+        </label>
+
+        <div class="summary-box">
+          <span>Calculated hours</span>
+          <strong id="calculatedHours">0.00</strong>
+        </div>
+
+        <button type="submit">Save entry</button>
+        <p id="formMessage" class="message" aria-live="polite"></p>
+      </form>
+
+      <section class="card entries-card">
+        <div class="entries-header">
+          <div>
+            <h2>Recent entries</h2>
+            <p class="muted small">Loaded from the connected Google Sheet.</p>
+          </div>
+          <label class="filter-label">
+            Filter by name
+            <input id="nameFilter" type="text" placeholder="Optional" />
+          </label>
+        </div>
+
+        <div class="totals">
+          <div>
+            <span>Total entries</span>
+            <strong id="totalEntries">0</strong>
+          </div>
+          <div>
+            <span>Total hours</span>
+            <strong id="totalHours">0.00</strong>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Task</th>
+                <th>Hours</th>
+              </tr>
+            </thead>
+            <tbody id="entriesBody">
+              <tr><td colspan="4" class="empty">No entries loaded yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <iframe name="hiddenSubmitFrame" id="hiddenSubmitFrame" title="Hidden form submit target"></iframe>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
