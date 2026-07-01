@@ -87,8 +87,7 @@ body {
 
 .logo-panel {
   justify-self: end;
-  background: var(--white);
-  padding: 12px;
+  padding: 2px;
   border-left: 14px solid var(--red-berry);
 }
 
