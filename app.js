@@ -82,27 +82,28 @@ function buildHiddenPostForm(data) {
   return hiddenForm;
 }
 
-form.addEventListener("submit", (event) => {
+form.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!ensureConfigured()) return;
 
   const hours = calculateHours();
   if (hours <= 0) {
-    setMessage("Check the start time and end time.", "error");
+    showPopup("Check the start time and end time.", "error");
     return;
   }
 
   if (!fields.personName.value) {
-    setMessage("Choose an approved user.", "error");
+    showPopup("Choose an approved user.", "error");
     return;
   }
 
   if (!fields.pin.value.trim()) {
-    setMessage("Enter your PIN.", "error");
+    showPopup("Enter your PIN.", "error");
     return;
   }
 
   const data = {
+    action: "save",
     token: APP_TOKEN,
     personName: fields.personName.value.trim(),
     pin: fields.pin.value.trim(),
@@ -115,20 +116,41 @@ form.addEventListener("submit", (event) => {
     createdAt: new Date().toISOString()
   };
 
-  const hiddenForm = buildHiddenPostForm(data);
-  hiddenForm.submit();
-  hiddenForm.remove();
+  const params = new URLSearchParams(data);
 
-  setMessage("Entry submitted. Refreshing recent entries...", "success");
+  try {
+    setMessage("Submitting entry...", "");
+    const result = await loadJsonp(`${SCRIPT_URL}?${params.toString()}`);
 
-  const selectedName = fields.personName.value;
-  form.reset();
-  fields.personName.value = selectedName;
-  fields.workDate.valueAsDate = new Date();
-  updateCalculatedHours();
+    if (!result.ok) {
+      throw new Error(result.error || "Could not save the entry.");
+    }
 
-  setTimeout(loadEntries, 1500);
+    const successMessage = result.message || `Hours submitted for ${data.personName}.`;
+    setMessage(successMessage, "success");
+    showPopup(`${successMessage}\n\nDate: ${data.workDate}\nHours: ${data.totalHours}`, "success");
+
+    const selectedName = fields.personName.value;
+    form.reset();
+    fields.personName.value = selectedName;
+    fields.workDate.valueAsDate = new Date();
+    updateCalculatedHours();
+
+    await loadEntries();
+  } catch (error) {
+    setMessage(error.message, "error");
+    showPopup(error.message, "error");
+  }
 });
+
+function showPopup(message, type = "") {
+  if (type === "error") {
+    window.alert(`Error: ${message}`);
+    return;
+  }
+
+  window.alert(message);
+}
 
 function loadJsonp(url) {
   return new Promise((resolve, reject) => {
