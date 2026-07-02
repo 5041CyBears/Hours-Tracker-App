@@ -94,7 +94,7 @@ body {
 
 .team-logo {
   display: block;
-  width: min(100%, 290px);
+  width: min(100%, 400px);
   height: auto;
 }
 
