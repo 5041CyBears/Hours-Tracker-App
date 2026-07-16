@@ -261,8 +261,7 @@ function renderEntries(entries) {
       <td>${escapeHtml(entry.personName || "")}</td>
       <td>
         <strong>${escapeHtml(entry.task || "General")}</strong><br />
-        <span class="muted small">${escapeHtml(entry.startTime || "")}–${escapeHtml(entry.endTime || "")}</span>
-      </td>
+        </td>
       <td>${Number(entry.totalHours || 0).toFixed(2)}</td>
     </tr>
   `).join("");
