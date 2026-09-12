@@ -1,142 +1,160 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>5041 CyBear Robotics Hours Tracker</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <main class="app-shell">
-    <section class="brand-hero" aria-labelledby="pageTitle">
-      <div class="brand-angle brand-angle-black" aria-hidden="true"></div>
-      <div class="brand-angle brand-angle-red" aria-hidden="true"></div>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#980000">
+    <title>5041 CyBear Robotics Hours Tracker</title>
 
-      <div class="brand-content">
-        <div class="brand-copy">
-          <h1 id="pageTitle">Hours Tracker</h1>
-        </div>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Droid+Sans:wght@400;700&family=Droid+Serif:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
 
-        <div class="logo-panel" aria-label="5041 CyBear Robotics logo">
-          <img src="assets/5041logo.png" alt="5041 CyBear Robotics logo" class="team-logo" />
-        </div>
-      </div>
-
-      <div class="hero-action-row">
-        <span class="loading-bar" aria-hidden="true"></span>
-        <div class="button-row">
-          <a class="button-link secondary" href="report.html">View reports</a>
-          <button id="refreshBtn" class="secondary" type="button">Refresh entries</button>
+  <body class="hours-standalone">
+    <header class="hours-site-header">
+      <div class="hours-header-inner">
+        <img class="hours-team-logo" src="assets/5041logo.png" alt="5041 CyBear Robotics logo">
+        <div class="hours-header-copy">
+          <span class="hours-team-name">5041 CyBear Robotics</span>
+          <h1>Hours Tracking</h1>
+          <p>Log. Review. Report.</p>
         </div>
       </div>
-    </section>
+      <div class="hours-header-stripe" aria-hidden="true"></div>
+    </header>
 
-    <section class="grid">
-      <form id="hoursForm" class="card form-card">
-        <div class="section-heading">
-          <span class="corner-mark" aria-hidden="true"></span>
-          <div>
-            <h2>Log Hours</h2>
-          </div>
+    <main class="hours-site-main" id="main-content">
+      <section class="docs-page-section hours-hero" id="overview">
+        <span class="resource-eyebrow">5041 CYBEAR ROBOTICS • PROGRAM OPERATIONS</span>
+        <h1 class="docs-page-title">Hours Tracker</h1>
+        <p class="docs-lead">
+          Log robotics, outreach, service, and other approved program hours. Entries are saved to the connected 5041 hours record after your name and PIN are verified.
+        </p>
+
+        <div class="hours-page-actions" aria-label="Hours tracker actions">
+          <a class="resource-link resource-link-secondary" href="report.html">View Reports</a>
+          <button id="refreshBtn" class="resource-button resource-button-secondary" type="button">Refresh Entries</button>
         </div>
+      </section>
 
-        <label>
-          Name
-          <select id="personName" name="personName" required>
-            <option value="">Loading approved users...</option>
-          </select>
-        </label>
-
-        <label>
-          PIN
-          <input id="pin" name="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="Enter your PIN" required />
-        </label>
-
-        <label>
-          Date
-          <input id="workDate" name="workDate" type="date" required />
-        </label>
-
-        <div class="two-col">
-          <label>
-            Start time
-            <input id="startTime" name="startTime" type="time" required />
-          </label>
-
-          <label>
-            End time
-            <input id="endTime" name="endTime" type="time" required />
-          </label>
-        </div>
-
-        <label>
-          Category / task
-          <input id="task" name="task" type="text" placeholder="Build meeting, outreach, remote work..." />
-        </label>
-
-        <label>
-          Notes
-          <textarea id="notes" name="notes" rows="3" placeholder="Optional details"></textarea>
-        </label>
-
-        <div class="summary-box">
-          <span>Calculated hours</span>
-          <strong id="calculatedHours">0.00</strong>
-        </div>
-
-        <button type="submit">Save entry</button>
-        <p id="formMessage" class="message" aria-live="polite"></p>
-      </form>
-
-      <section class="card entries-card">
-        <div class="entries-header">
-          <div class="section-heading compact-heading">
-            <span class="corner-mark" aria-hidden="true"></span>
+      <div class="hours-content-grid">
+        <section class="docs-page-section resource-section hours-form-section" id="log-hours">
+          <div class="resource-section-heading">
             <div>
-              <h2>Recent entries</h2>
-              <p class="muted small">Loaded from the connected Google Sheet.</p>
+              <span class="resource-section-kicker">New entry</span>
+              <h2>Log Hours</h2>
             </div>
           </div>
 
-          <label class="filter-label">
-            Filter by name
-            <input id="nameFilter" type="text" placeholder="Optional" />
-          </label>
-        </div>
+          <form id="hoursForm" class="hours-form">
+            <label class="hours-field">
+              <span>Name</span>
+              <select id="personName" name="personName" required>
+                <option value="">Loading approved users...</option>
+              </select>
+            </label>
 
-        <div class="totals">
-          <div>
-            <span>Total entries</span>
-            <strong id="totalEntries">0</strong>
+            <label class="hours-field">
+              <span>PIN</span>
+              <input id="pin" name="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="Enter your PIN" required>
+            </label>
+
+            <label class="hours-field">
+              <span>Date</span>
+              <input id="workDate" name="workDate" type="date" required>
+            </label>
+
+            <div class="hours-field-grid two-col">
+              <label class="hours-field">
+                <span>Start time</span>
+                <input id="startTime" name="startTime" type="time" required>
+              </label>
+
+              <label class="hours-field">
+                <span>End time</span>
+                <input id="endTime" name="endTime" type="time" required>
+              </label>
+            </div>
+
+            <label class="hours-field">
+              <span>Category / task</span>
+              <input id="task" name="task" type="text" placeholder="Build meeting, outreach, remote work...">
+            </label>
+
+            <label class="hours-field">
+              <span>Notes <em>optional</em></span>
+              <textarea id="notes" name="notes" rows="3" placeholder="Optional details"></textarea>
+            </label>
+
+            <div class="hours-summary-box" aria-live="polite">
+              <span>Calculated hours</span>
+              <strong id="calculatedHours">0.00</strong>
+            </div>
+
+            <div class="hours-form-actions">
+              <button type="submit" class="resource-button">Save Entry</button>
+            </div>
+            <p id="formMessage" class="message" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="docs-page-section resource-section hours-entries-section" id="recent-entries">
+          <div class="resource-section-heading entries-heading">
+            <div>
+              <span class="resource-section-kicker">Connected Google Sheet</span>
+              <h2>Recent Entries</h2>
+              <p class="section-note">Review the most recently loaded hour entries.</p>
+            </div>
+
+            <label class="hours-field filter-field">
+              <span>Filter by name</span>
+              <input id="nameFilter" type="text" placeholder="Optional">
+            </label>
           </div>
-          <div>
-            <span>Total hours</span>
-            <strong id="totalHours">0.00</strong>
+
+          <div class="hours-stat-grid compact-stats">
+            <article>
+              <span>Total entries</span>
+              <strong id="totalEntries">0</strong>
+            </article>
+            <article>
+              <span>Total hours</span>
+              <strong id="totalHours">0.00</strong>
+            </article>
           </div>
-        </div>
 
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Name</th>
-                <th>Task</th>
-                <th>Hours</th>
-              </tr>
-            </thead>
-            <tbody id="entriesBody">
-              <tr><td colspan="4" class="empty">No entries loaded yet.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-    </section>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Name</th>
+                  <th>Task</th>
+                  <th>Hours</th>
+                </tr>
+              </thead>
+              <tbody id="entriesBody">
+                <tr><td colspan="4" class="empty">No entries loaded yet.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
 
-    <iframe name="hiddenSubmitFrame" id="hiddenSubmitFrame" title="Hidden form submit target"></iframe>
-  </main>
+      <iframe name="hiddenSubmitFrame" id="hiddenSubmitFrame" title="Hidden form submit target"></iframe>
+    </main>
 
-  <script src="config.js"></script>
-  <script src="app.js"></script>
-</body>
+    <footer class="hours-site-footer">
+      <div>
+        <strong>5041 CyBear Robotics</strong>
+        <span>Everyone has a place here.</span>
+      </div>
+      <p>Hours tracking supports program participation records, outreach documentation, and team operations.</p>
+    </footer>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+  </body>
 </html>

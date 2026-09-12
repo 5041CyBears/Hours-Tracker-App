@@ -1,103 +1,110 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>5041 CyBear Robotics Hours Reports</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <main class="app-shell">
-    <section class="brand-hero" aria-labelledby="pageTitle">
-      <div class="brand-angle brand-angle-black" aria-hidden="true"></div>
-      <div class="brand-angle brand-angle-red" aria-hidden="true"></div>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#980000">
+    <title>5041 CyBear Robotics Hours Reports</title>
 
-      <div class="brand-content">
-        <div class="brand-copy">
-          <h1 id="pageTitle">Hours Reports</h1>
-          <p class="muted">Choose a time period to total approved-user hours. The leaderboard always shows totals from the last three months.</p>
-        </div>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Droid+Sans:wght@400;700&family=Droid+Serif:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
 
-        <div class="logo-panel" aria-label="5041 CyBear Robotics logo">
-          <img src="assets/5041logo.png" alt="5041 CyBear Robotics logo" class="team-logo" />
-        </div>
-      </div>
-
-      <div class="hero-action-row">
-        <span class="loading-bar" aria-hidden="true"></span>
-        <div class="button-row">
-          <a class="button-link secondary" href="index.html">Log hours</a>
-          <button id="refreshReportBtn" class="secondary" type="button">Refresh report</button>
+  <body class="hours-standalone">
+    <header class="hours-site-header">
+      <div class="hours-header-inner">
+        <img class="hours-team-logo" src="assets/5041logo.png" alt="5041 CyBear Robotics logo">
+        <div class="hours-header-copy">
+          <span class="hours-team-name">5041 CyBear Robotics</span>
+          <h1>Hours Reporting</h1>
+          <p>Review. Total. Recognize.</p>
         </div>
       </div>
-    </section>
+      <div class="hours-header-stripe" aria-hidden="true"></div>
+    </header>
 
-    <section class="report-grid">
-      <section class="card report-controls-card">
-        <div class="section-heading">
-          <span class="corner-mark" aria-hidden="true"></span>
-          <div>
-            <h2>Choose dates</h2>
-          </div>
-        </div>
+    <main class="hours-site-main" id="main-content">
+      <section class="docs-page-section hours-hero" id="overview">
+        <span class="resource-eyebrow">5041 CYBEAR ROBOTICS • PROGRAM OPERATIONS</span>
+        <h1 class="docs-page-title">Hours Reports</h1>
+        <p class="docs-lead">
+          Choose a time period to total approved-user hours. The leaderboard always shows totals from the last three months.
+        </p>
 
-        <form id="reportForm" class="report-form">
-          <div class="two-col">
-            <label>
-              Start date
-              <input id="reportStartDate" type="date" required />
-            </label>
-
-            <label>
-              End date
-              <input id="reportEndDate" type="date" required />
-            </label>
-          </div>
-
-          <div class="preset-row" aria-label="Quick date range choices">
-            <button class="secondary small-button" type="button" data-range="month">This month</button>
-            <button class="secondary small-button" type="button" data-range="30">Last 30 days</button>
-            <button class="secondary small-button" type="button" data-range="90">Last 90 days</button>
-          </div>
-
-          <button type="submit">Run report</button>
-          <p id="reportMessage" class="message" aria-live="polite"></p>
-        </form>
-      </section>
-
-      <section class="card report-summary-card">
-        <div class="section-heading compact-heading">
-          <span class="corner-mark" aria-hidden="true"></span>
-          <div>
-            <p class="eyebrow small-eyebrow">Selected Range</p>
-            <h2 id="selectedRangeLabel">Totals</h2>
-          </div>
-        </div>
-
-        <div class="totals report-totals">
-          <div>
-            <span>Total approved users</span>
-            <strong id="approvedUserCount">0</strong>
-          </div>
-          <div>
-            <span>Total entries</span>
-            <strong id="selectedEntryCount">0</strong>
-          </div>
-          <div>
-            <span>Total hours</span>
-            <strong id="selectedHoursTotal">0.00</strong>
-          </div>
+        <div class="hours-page-actions" aria-label="Hours report actions">
+          <a class="resource-link resource-link-secondary" href="index.html">Log Hours</a>
+          <button id="refreshReportBtn" class="resource-button resource-button-secondary" type="button">Refresh Report</button>
         </div>
       </section>
 
-      <section class="card full-width-card">
-        <div class="entries-header">
-          <div class="section-heading compact-heading">
-            <span class="corner-mark" aria-hidden="true"></span>
+      <div class="report-top-grid">
+        <section class="docs-page-section resource-section" id="choose-dates">
+          <div class="resource-section-heading">
             <div>
-              <h2>Hours by user</h2>
-              <p class="muted small">Includes all approved users, even if they have 0 hours.</p>
+              <span class="resource-section-kicker">Report controls</span>
+              <h2>Choose Dates</h2>
             </div>
+          </div>
+
+          <form id="reportForm" class="hours-form report-form">
+            <div class="hours-field-grid two-col">
+              <label class="hours-field">
+                <span>Start date</span>
+                <input id="reportStartDate" type="date" required>
+              </label>
+
+              <label class="hours-field">
+                <span>End date</span>
+                <input id="reportEndDate" type="date" required>
+              </label>
+            </div>
+
+            <div class="preset-row" aria-label="Quick date range choices">
+              <button class="resource-button resource-button-secondary small-button" type="button" data-range="month">This Month</button>
+              <button class="resource-button resource-button-secondary small-button" type="button" data-range="30">Last 30 Days</button>
+              <button class="resource-button resource-button-secondary small-button" type="button" data-range="90">Last 90 Days</button>
+            </div>
+
+            <div class="hours-form-actions">
+              <button type="submit" class="resource-button">Run Report</button>
+            </div>
+            <p id="reportMessage" class="message" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="docs-page-section resource-section" id="range-summary">
+          <div class="resource-section-heading">
+            <div>
+              <span class="resource-section-kicker">Selected range</span>
+              <h2 id="selectedRangeLabel">Totals</h2>
+            </div>
+          </div>
+
+          <div class="hours-stat-grid report-stats">
+            <article>
+              <span>Total approved users</span>
+              <strong id="approvedUserCount">0</strong>
+            </article>
+            <article>
+              <span>Total entries</span>
+              <strong id="selectedEntryCount">0</strong>
+            </article>
+            <article>
+              <span>Total hours</span>
+              <strong id="selectedHoursTotal">0.00</strong>
+            </article>
+          </div>
+        </section>
+      </div>
+
+      <section class="docs-page-section resource-section" id="hours-by-user">
+        <div class="resource-section-heading">
+          <div>
+            <span class="resource-section-kicker">Selected range</span>
+            <h2>Hours by User</h2>
+            <p class="section-note">Includes all approved users, even if they have 0 hours.</p>
           </div>
         </div>
 
@@ -118,19 +125,16 @@
         </div>
       </section>
 
-      <section class="card full-width-card leaderboard-card">
-        <div class="entries-header">
-          <div class="section-heading compact-heading">
-            <span class="corner-mark" aria-hidden="true"></span>
-            <div>
-              <p class="eyebrow small-eyebrow">Last Three Months</p>
-              <h2>Leaderboard</h2>
-              <p id="leaderboardRangeLabel" class="muted small">Loaded from the connected Google Sheet.</p>
-            </div>
+      <section class="docs-page-section resource-section leaderboard-section" id="leaderboard">
+        <div class="resource-section-heading">
+          <div>
+            <span class="resource-section-kicker">Last three months</span>
+            <h2>Leaderboard</h2>
+            <p id="leaderboardRangeLabel" class="section-note">Loaded from the connected Google Sheet.</p>
           </div>
         </div>
 
-        <div class="table-wrap">
+        <div class="table-wrap leaderboard-table-wrap">
           <table>
             <thead>
               <tr>
@@ -146,10 +150,17 @@
           </table>
         </div>
       </section>
-    </section>
-  </main>
+    </main>
 
-  <script src="config.js"></script>
-  <script src="report.js"></script>
-</body>
+    <footer class="hours-site-footer">
+      <div>
+        <strong>5041 CyBear Robotics</strong>
+        <span>Everyone has a place here.</span>
+      </div>
+      <p>Hours reporting summarizes the records maintained by the 5041 Hours Tracker.</p>
+    </footer>
+
+    <script src="config.js"></script>
+    <script src="report.js"></script>
+  </body>
 </html>
