@@ -74,8 +74,8 @@ select {
 }
 
 .hours-team-logo {
-  width: 86px;
-  height: 86px;
+  width: 150px;
+  height: 150px;
   object-fit: contain;
   flex: 0 0 auto;
 }
